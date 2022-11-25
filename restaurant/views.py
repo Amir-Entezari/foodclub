@@ -7,8 +7,8 @@ from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateMo
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from .models import Food, Category, Customer, Cart, CartItem, Order, OrderItem, Review
-from .serializers import FoodSerializer, CategorySerializer, CustomerSerializer, CartSerializer, CartItemSerializer, AddCartItemSerializer, UpdateCartItemSerializer, ReviewSerializer, OrderSerializer, CreateOrderSerializer,UpdateOrderSerializer
+from .models import Food, FoodImage, Category, Customer, Cart, CartItem, Order, OrderItem, Review
+from .serializers import FoodSerializer, FoodImageSerializer, CategorySerializer, CustomerSerializer, CartSerializer, CartItemSerializer, AddCartItemSerializer, UpdateCartItemSerializer, ReviewSerializer, OrderSerializer, CreateOrderSerializer, UpdateOrderSerializer
 from .filters import FoodFilter
 from .paginations import DefaultPagination
 from .permissions import IsAdminOrReadOnly, FullDjangoModelPermissions, ViewCustomerHistoryPermission
@@ -27,7 +27,8 @@ class CategoryViewSet(ModelViewSet):
 
 
 class FoodViewSet(ModelViewSet):
-    queryset = Food.objects.select_related('category').all()
+    queryset = Food.objects.select_related(
+        'category').prefetch_related('images').all()
     serializer_class = FoodSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = FoodFilter
@@ -36,12 +37,12 @@ class FoodViewSet(ModelViewSet):
     search_fields = ['title', 'description']
     ordering_fields = ['unit_price', 'last_update']
 
-    def get_queryset(self):
-        queryset = Food.objects.select_related('category').all()
-        category_id = self.request.query_params.get('category_id')
-        if category_id is not None:
-            queryset = queryset.filter(category_id=category_id)
-        return queryset
+    # def get_queryset(self):
+    #     queryset = Food.objects.select_related('category').all()
+    #     category_id = self.request.query_params.get('category_id')
+    #     if category_id is not None:
+    #         queryset = queryset.filter(category_id=category_id)
+    #     return queryset
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -117,11 +118,12 @@ class CustomerViewSet(ModelViewSet):
 
 
 class OrderViewSet(ModelViewSet):
-    http_method_names = ['get','post','patch','delete','head','options']
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
     def get_permissions(self):
-        if self.request.method in ['PATCH','DELETE']:
+        if self.request.method in ['PATCH', 'DELETE']:
             return [IsAdminUser()]
-        
+
         return [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
@@ -136,7 +138,7 @@ class OrderViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return CreateOrderSerializer
-        elif self.request.method =='PATCH':
+        elif self.request.method == 'PATCH':
             return UpdateOrderSerializer
         return OrderSerializer
 
@@ -151,3 +153,13 @@ class OrderViewSet(ModelViewSet):
 
     # def get_serializer_context(self):
     #     return {'user_id': self.request.user.id}
+
+
+class FoodImageViewSet(ModelViewSet):
+    serializer_class = FoodImageSerializer
+
+    def get_serializer_context(self):
+        return {'food_id': self.kwargs['food_pk']}
+
+    def get_queryset(self):
+        return FoodImage.objects.filter(food_id=self.kwargs['food_pk'])

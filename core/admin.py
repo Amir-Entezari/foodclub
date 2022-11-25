@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User
 from django.contrib.contenttypes.admin import GenericTabularInline
-from restaurant.admin import FoodAdmin
+from restaurant.admin import FoodAdmin, FoodImageInline
 from restaurant.models import Food
 from tags.models import TaggedItem
 # Register your models here.
@@ -24,7 +24,7 @@ class TagInline(GenericTabularInline):
     model=TaggedItem
 
 class CustomFoodAdmin(FoodAdmin):
-    inlines = [TagInline]
+    inlines = [TagInline,FoodImageInline]
 
 
 admin.site.unregister(Food)

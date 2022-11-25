@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.db import transaction
 from rest_framework import serializers
-from .models import Food, Category, Customer, Cart, CartItem, Order, OrderItem, Review
+from .models import Food,FoodImage, Category, Customer, Cart, CartItem, Order, OrderItem, Review
 from .signals import order_created
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -11,11 +11,21 @@ class CategorySerializer(serializers.ModelSerializer):
     foods_count = serializers.IntegerField(read_only=True)
 
 
+class FoodImageSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        food_id = self.context['food_id']
+        return FoodImage.objects.create(food_id=food_id, **validated_data)
+
+    class Meta:
+        model = FoodImage
+        fields = ['id', 'image']
+
 class FoodSerializer(serializers.ModelSerializer):
+    images= FoodImageSerializer(many=True,read_only=True)
     class Meta:
         model = Food
         fields = ['id', 'title', 'description', 'slug',
-                  'inventory', 'price', 'price_with_tax', 'category']
+                  'inventory', 'price', 'price_with_tax', 'category','images']
 
     category = serializers.HyperlinkedRelatedField(
         queryset=Category.objects.all(), view_name='category-detail')
@@ -169,3 +179,4 @@ class UpdateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['payment_status']
+

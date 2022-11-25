@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.core.validators import MinValueValidator
 from uuid import uuid4
+from .validators import validate_file_size
 # Create your models here.
 
 
@@ -41,6 +42,15 @@ class Food(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        ordering = ['title']
+
+
+class FoodImage(models.Model):
+    food = models.ForeignKey(
+        Food, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='restaurant/images',validators=[validate_file_size])
+
 
 class Review(models.Model):
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
@@ -78,8 +88,8 @@ class Customer(models.Model):
 
     class Meta:
         ordering = ['user__first_name', 'user__last_name']
-        permissions=[
-            ('view_history','Can view history')
+        permissions = [
+            ('view_history', 'Can view history')
         ]
 
 

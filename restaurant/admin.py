@@ -26,6 +26,15 @@ class CategoryAdmoin(admin.ModelAdmin):
         return super().get_queryset(request).annotate(foods_count=Count('food'))
 
 
+class FoodImageInline(admin.TabularInline):
+    model = models.FoodImage
+    readonly_fields =['thumbnail']
+
+    def thumbnail(self,instance):
+        if instance.image.name !='':
+            return format_html(f'<img src="{instance.image.url}" class="thumbnail"/>')
+        return ''
+
 @admin.register(models.Food)
 class FoodAdmin(admin.ModelAdmin):
     autocomplete_fields = ['category']
@@ -33,12 +42,14 @@ class FoodAdmin(admin.ModelAdmin):
         'slug': ['title']
     }
     actions = ['clear_inventory']
+    inlines = [FoodImageInline]
     list_display = ['title', 'unit_price', 'inventory_status', 'category']
     list_editable = ['unit_price']
     list_filter = ['category', 'last_update']
     list_per_page = 10
     #list_select_related = ['category']
     search_fields = ['title']
+
     @admin.display(ordering='inventory')
     def inventory_status(self, food):
         if food.inventory < 10:
@@ -53,6 +64,10 @@ class FoodAdmin(admin.ModelAdmin):
             f'{updated_count} foods were successfully updated',
             messages.ERROR
         )
+    class Media:
+        css ={
+            'all':['restaurant/styles.css']
+        }
 
 
 @admin.register(models.Customer)
@@ -86,9 +101,10 @@ class OrderItemInline(admin.TabularInline):
     autocomplete_fields = ['food']
     model = models.OrderItem
 
+
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
-    autocomplete_fields =['customer']
+    autocomplete_fields = ['customer']
     inlines = [OrderItemInline]
     ordering = ['placed_at']
 
