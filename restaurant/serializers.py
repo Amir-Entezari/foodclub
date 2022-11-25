@@ -1,8 +1,9 @@
 from decimal import Decimal
 from django.db import transaction
 from rest_framework import serializers
-from .models import Food,FoodImage, Category, Customer, Cart, CartItem, Order, OrderItem, Review
+from .models import Food, FoodImage, Category, Customer, Cart, CartItem, Order, OrderItem, Review
 from .signals import order_created
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,12 +21,14 @@ class FoodImageSerializer(serializers.ModelSerializer):
         model = FoodImage
         fields = ['id', 'image']
 
+
 class FoodSerializer(serializers.ModelSerializer):
-    images= FoodImageSerializer(many=True,read_only=True)
+    images = FoodImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Food
         fields = ['id', 'title', 'description', 'slug',
-                  'inventory', 'price', 'price_with_tax', 'category','images']
+                  'inventory', 'price', 'price_with_tax', 'category', 'images']
 
     category = serializers.HyperlinkedRelatedField(
         queryset=Category.objects.all(), view_name='category-detail')
@@ -141,10 +144,11 @@ class OrderSerializer(serializers.ModelSerializer):
 class CreateOrderSerializer(serializers.Serializer):
     cart_id = serializers.UUIDField()
 
-    def validate_cart_id(self,cart_id):
+    def validate_cart_id(self, cart_id):
         if not Cart.objects.filter(pk=cart_id).exists():
-            raise serializers.ValidationError('No cart with the given id found')
-        if Cart.objects.filter(cart_id=cart_id).count() == 0:
+            raise serializers.ValidationError(
+                'No cart with the given id found')
+        if Cart.objects.filter(pk=cart_id).count() == 0:
             raise serializers.ValidationError('The cart is empty')
         return cart_id
 
@@ -172,11 +176,15 @@ class CreateOrderSerializer(serializers.Serializer):
             OrderItem.objects.bulk_create(order_items)
 
             Cart.objects.filter(pk=cart_id).delete()
-            order_created.send_robust(self.__class__,order=order)
+            order_created.send_robust(
+                self.__class__,
+                order=cart_items,
+                name=f'{customer.user.first_name} {customer.user.last_name}',
+                email=customer.user.email)
             return order
-        
+
+
 class UpdateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['payment_status']
-

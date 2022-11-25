@@ -1,0 +1,18 @@
+{% block subject %}Your Order On Foodclub{% endblock %}
+
+
+{% block text_body %}
+
+{% endblock %}
+
+{% block html_body%}
+    <h1>Hello</h1>
+    This is a message to {{ name }}.
+    Your Order is successfully submited.
+    Here your order
+    <ul>
+        {% for orderitem in order %}
+        <li>{{orderitem.food.title}} * {{orderitem.quantity}} </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

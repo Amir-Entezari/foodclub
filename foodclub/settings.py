@@ -164,11 +164,13 @@ DJOSER = {
     }
 }
 
-# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY5Mjk1NTY2LCJqdGkiOiJlNDg0MjhjMzE2NTc0ZjJlOGMzZTMwZDY0NTljMzQ4OSIsInVzZXJfaWQiOjN9.hMgdqCQzeR98ajR0OXxBGmpPRa7Uu9JIeINRLFPd3iE
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_USER=''
+EMAIL_HOST_PASSWORD=''
+EMAIL_PORT = 2525
+DEFAULT_FROM_EMAIL = 'from@foodclub.com'
 
-
-# {
-# "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY2OTI5NTU2NiwianRpIjoiMDU5YTZiMjBlYzAwNDMxOTg0MzM5YjAwNDM2NDhiNmQiLCJ1c2VyX2lkIjozfQ.xG_uAx-dry5yZOjVPcImUtKUunT-CIlLo0W9fl0KX4o",
-# "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY5Mjk1NTY2LCJqdGkiOiJlNDg0MjhjMzE2NTc0ZjJlOGMzZTMwZDY0NTljMzQ4OSIsInVzZXJfaWQiOjN9.hMgdqCQzeR98ajR0OXxBGmpPRa7Uu9JIeINRLFPd3iE"
-# }
-#
+ADMIN = [
+    ('Admin','admin@foodclub.com')
+]
