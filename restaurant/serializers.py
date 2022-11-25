@@ -126,7 +126,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     food = SimpleFoodSerializer()
-
+    #serializer_related_field=['food']
     class Meta:
         model = OrderItem
         fields = ['id', 'food', 'quantity', 'unit_price']
@@ -134,11 +134,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     orderitem_set = OrderItemSerializer(many=True)
-
     class Meta:
         model = Order
         fields = ['id', 'customer', 'placed_at',
                   'payment_status', 'orderitem_set']
+        
 
 
 class CreateOrderSerializer(serializers.Serializer):
@@ -178,7 +178,7 @@ class CreateOrderSerializer(serializers.Serializer):
             Cart.objects.filter(pk=cart_id).delete()
             order_created.send_robust(
                 self.__class__,
-                order=cart_items,
+                order=(cart_items),
                 name=f'{customer.user.first_name} {customer.user.last_name}',
                 email=customer.user.email)
             return order

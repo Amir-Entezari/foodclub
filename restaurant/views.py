@@ -149,7 +149,8 @@ class OrderViewSet(ModelViewSet):
 
         customer_id = Customer.objects.only(
             'id').get(user_id=user.id)
-        return Order.objects.filter(customer_id=customer_id)
+        return Order.objects.prefetch_related('orderitem_set__food').filter(customer_id=customer_id)
+        return 
 
     # def get_serializer_context(self):
     #     return {'user_id': self.request.user.id}

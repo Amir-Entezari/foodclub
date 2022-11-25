@@ -11,8 +11,8 @@
     Your Order is successfully submited.
     Here your order
     <ul>
-        {% for orderitem in order %}
-        <li>{{orderitem.food.title}} * {{orderitem.quantity}} </li>
+        {% for cartitem in order %}
+        <li>{{cartitem.food.title}} * {{cartitem.quantity}} </li>
         {% endfor %}
     </ul>
 {% endblock %}
