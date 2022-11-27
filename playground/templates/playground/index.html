@@ -7,10 +7,11 @@
     <title>Document</title>
 </head>
 <body>
+    <h1>HELLO WORLD</h1>
     <ul>
-    {% for food in foods %}
+    {% for user in users %}
        <li>
-        {{ food.title }}
+        {{ user.user__email }}
        </li>
     {% endfor %}
     </ul>

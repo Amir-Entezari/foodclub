@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -166,11 +167,20 @@ DJOSER = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'localhost'
-EMAIL_HOST_USER=''
-EMAIL_HOST_PASSWORD=''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 2525
 DEFAULT_FROM_EMAIL = 'from@foodclub.com'
 
 ADMIN = [
-    ('Admin','admin@foodclub.com')
+    ('Admin', 'admin@foodclub.com')
 ]
+
+CELERY_BROKER_URL = 'redis://localhost:6379/1'
+CELERY_BEAT_SCHEDULE = {
+    'notify_offer':{
+        'task':'core.tasks.notify_offer',
+        'schedule': crontab(day_of_week=5, hour=7, minute=30),
+        'args': ['Notifing offers']
+    }
+}
