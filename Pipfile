@@ -22,6 +22,7 @@ pytest = "*"
 [dev-packages]
 autopep8 = "*"
 pytest-django = "*"
+model-bakery = "*"
 
 [requires]
 python_version = "3.10"
