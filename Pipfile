@@ -17,9 +17,11 @@ django-templated-mail = "*"
 redis = "*"
 celery = "*"
 flower = "*"
+pytest = "*"
 
 [dev-packages]
 autopep8 = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.10"
