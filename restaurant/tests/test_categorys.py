@@ -73,3 +73,4 @@ class TestRetrieveCategory:
             'title': category.title,
             'foods_count': 0
         }
+  

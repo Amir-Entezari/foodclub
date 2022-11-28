@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djoser',
+    'silk',
     'django_filters',
     'playground',
     'core',
@@ -59,6 +60,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# if DEBUG:
+#     MIDDLEWARE += ['silk.middleware.SilkyMiddleware']
 
 INTERNAL_IPS = [
     '127.0.0.1'
@@ -178,8 +182,8 @@ ADMIN = [
 
 CELERY_BROKER_URL = 'redis://localhost:6379/1'
 CELERY_BEAT_SCHEDULE = {
-    'notify_offer':{
-        'task':'core.tasks.notify_offer',
+    'notify_offer': {
+        'task': 'core.tasks.notify_offer',
         'schedule': crontab(day_of_week=5, hour=7, minute=30),
         'args': ['Notifing offers']
     }
