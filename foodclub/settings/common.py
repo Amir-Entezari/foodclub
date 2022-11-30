@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
+    'django.contrib.contenttypes', یتشدیتشد
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
